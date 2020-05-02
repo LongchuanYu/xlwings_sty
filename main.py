@@ -45,6 +45,7 @@ C_CASE_SH3 = 17
 class Mywork():
     def __init__(self):
         self.tools = Tools()
+
         self.books = self.tools.get_AllBooks()
         for book in self.books:
             if book.name == SH1_EXCEL_NAME:
@@ -62,14 +63,18 @@ class Mywork():
         self.clickWindow = False
         self.sh3CheckButtonFlag = False
         self.sh3GenButtonFlag = False
+        self.author_name = ''
     def main(self):
         
         errors = {}
         print(self.tools.doc_print())
-        while 1:
-            ret = input('按回车键继续:')
-            if ret=='':
-                break
+        ret = input('输入你的名字，按回车键继续:')
+        if ret=='':
+            print('\n再见，你什么都没输入！')
+            time.sleep(3)
+            return
+        else:
+            self.author_name = ret
         # 清理工作簿，删除C7非对应的行
         # max_row = self.tools.get_MaxRowByEndFlag(self.sh1)
         # for row in range(max_row , R_DATA,-1):
@@ -109,7 +114,7 @@ class Mywork():
                 self.b2.macro('Clear2.Clear2')()
                 # 执行复制
                 self.do_task_1_copy(start=pre_row,end=row-1)
-                time.sleep(1)
+                time.sleep(2)
                 #----------------------------------------------- 2.xlsm
                 # 跳转到ToCase表单并执行clear命令
                 
@@ -147,9 +152,9 @@ class Mywork():
                 self.b3.macro('keisen_Check')()
                 self.log('[{}]  3.xlsm 网挂Check执行完毕...'.format(self.sh2_1_daikinou_name))
                 time.sleep(2)
-                # 名字入力 SH3_AUTHOR
+                # 名字入力 self.author_name
                 rng = self.sh3.range((R_DATA_SH3,C_CASE_SH3+1),(self.tools.get_MaxRowBySheet(self.sh3),C_CASE_SH3+1))
-                rng.columns[0].value = SH3_AUTHOR
+                rng.columns[0].value = self.author_name
                 self.log('[{}] 3.xlsm 作者名字入力成功'.format(self.sh2_1_daikinou_name))
                 time.sleep(1)
 
@@ -160,12 +165,12 @@ class Mywork():
                 time.sleep(2)
                 
                 #--------------------------------------------文件操作
-                root = os.path.abspath('.')
-                dir_result = os.path.join(root,'/Result')
+                # root = os.path.abspath('.')
+                root = os.path.join(os.path.abspath('.'),'Result')
                 dir_ori_file = os.path.join(root,'3_TestCase.xml')
                 dir_tar_file = os.path.join(root,'{}.xml'.format(self.sh2_1_daikinou_name or 'null'))
-                if not os.path.exists(dir_result):
-                    os.makedirs(dir_result)
+                if not os.path.exists(root):
+                    os.makedirs(root)
                 if not os.path.exists(dir_tar_file):
                     os.rename(dir_ori_file,dir_tar_file)
                 else:
@@ -307,9 +312,11 @@ class Mywork():
         # wd2 = Application().connect(title_re='大機能',timeout=1).top_window()
         # wd2.set_focus()
         # # mouse.move((x-100,y-200))
-        rng = self.sh3.range((R_DATA_SH3,C_CASE_SH3+1),(self.tools.get_MaxRowBySheet(self.sh3),C_CASE_SH3+1))
-        rng.columns[0].value = '1'
-
+        root = os.path.abspath('.')
+        dir_result = os.path.join(root,'Result')
+        if not os.path.exists(dir_result):
+            os.makedirs(dir_result)
+        
 class Tools():
     def get_AllBooks(self):
         '''获取所有已打开的工作簿'''

@@ -1,3 +1,7 @@
 1.xlsx
 2.xlsm
 3.xlsm
+__pycache__
+build
+dist
+Result
