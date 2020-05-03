@@ -3,5 +3,5 @@
 3.xlsm
 __pycache__
 build
-dist
+dist*
 Result

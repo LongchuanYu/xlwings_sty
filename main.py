@@ -359,6 +359,10 @@ def test():
 
 
 
-
-m = Mywork()
-m.main()
+try:
+    m = Mywork()
+    m.main()
+except Exception as ex:
+    print('\n\n异常...5秒后退出\n')
+    print(ex)
+    time.sleep(5)
